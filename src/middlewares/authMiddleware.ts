@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction, RequestHandler } from 'express';
-import jwt, { JwtPayload } from 'jsonwebtoken';
+import jwt from 'jsonwebtoken';
 
-export const authenticate: RequestHandler = (
+export const jwtAuth: RequestHandler = (
   req: Request,
   res: Response,
   next: NextFunction,
@@ -16,9 +16,15 @@ export const authenticate: RequestHandler = (
   const token = authHeader.split(' ')[1];
 
   try {
-    const secret = process.env.JWT_SECRET || 'segredo';
+    const secret = process.env.JWT_SECRET;
+
+    if (!secret) {
+      res.status(401).json({ error: 'chave de decrepitação invalida' });
+      return;
+    }
+
     const decoded = jwt.verify(token, secret);
-    (req as JwtPayload).user = decoded;
+    (req as any).userInfo = decoded;
     next();
   } catch {
     res.status(401).json({ error: 'Token inválido' });

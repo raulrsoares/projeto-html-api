@@ -7,5 +7,9 @@ export const notFoundHandler = (
   _res: Response,
   next: NextFunction,
 ) => {
-  next(new NotFoundError(`Rota '${req.originalUrl}' não encontrada`));
+  next(
+    new NotFoundError(
+      `Rota '${req.originalUrl}' ['${req.method}'] não encontrada`,
+    ),
+  );
 };
