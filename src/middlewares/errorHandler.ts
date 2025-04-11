@@ -19,6 +19,7 @@ export const errorHandler = (
 export class HttpError extends Error {
   status: number;
   constructor(message: string, status: number) {
+    console.error(message);
     super(message);
     this.status = status;
   }

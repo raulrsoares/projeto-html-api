@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction, RequestHandler } from 'express';
 import jwt from 'jsonwebtoken';
+import { UnauthorizedError } from './errorHandler';
 
 export const jwtAuth: RequestHandler = (
   req: Request,
@@ -9,8 +10,7 @@ export const jwtAuth: RequestHandler = (
   const authHeader = req.headers.authorization;
 
   if (!authHeader?.startsWith('Bearer ')) {
-    res.status(401).json({ error: 'Token não fornecido' });
-    return;
+    throw new UnauthorizedError('Token não fornecido');
   }
 
   const token = authHeader.split(' ')[1];
@@ -19,14 +19,14 @@ export const jwtAuth: RequestHandler = (
     const secret = process.env.JWT_SECRET;
 
     if (!secret) {
-      res.status(401).json({ error: 'chave de decrepitação invalida' });
-      return;
+      throw new UnauthorizedError('chave de decrepitação invalida');
     }
 
     const decoded = jwt.verify(token, secret);
+
     (req as any).userInfo = decoded;
     next();
-  } catch {
-    res.status(401).json({ error: 'Token inválido' });
+  } catch (error) {
+    next(error);
   }
 };

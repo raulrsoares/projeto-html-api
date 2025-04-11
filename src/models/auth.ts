@@ -1,5 +1,4 @@
 import { JwtPayload } from 'jsonwebtoken';
-import { ExpirationInType } from '../types/jwtTypes';
 
 export interface JwtPayloadApplication extends JwtPayload {
   sub: string; // ID do usuário
@@ -9,16 +8,12 @@ export interface JwtPayloadApplication extends JwtPayload {
   jti?: string;
 }
 
-export interface CriarTokenParams {
-  userId: string;
-  expiresIn?: ExpirationInType | string;
-}
-
 export interface RequestBody {
   email: string;
   senha: string;
 }
+
 export interface ResponseBody {
-  auth: string;
+  authorization: string;
   role: string;
 }

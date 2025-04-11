@@ -5,10 +5,12 @@
   "scripts": {
     "build": "tsc",
     "start": "tsc && node dist/server.js",
-    "dev": "tsx watch src/server.ts",
+    "dev": "prisma generate && prisma db push && tsx watch src/server.ts",
     "lint": "eslint 'src/**/*.ts'",
     "test": "jest",
-    "test:watch": "jest --watch"
+    "test:watch": "jest --watch",
+    "generate": "prisma generate",
+    "studio": "prisma studio"
   },
   "keywords": [],
   "author": "",
@@ -25,11 +27,13 @@
     "eslint": "^9.24.0",
     "jest": "^29.7.0",
     "prettier": "^3.5.3",
+    "prisma": "^6.6.0",
     "ts-jest": "^29.3.1",
     "tsx": "^4.19.3",
     "typescript": "^5.8.3"
   },
   "dependencies": {
+    "@prisma/client": "^6.6.0",
     "express": "^5.1.0",
     "jsonwebtoken": "^9.0.2",
     "morgan": "^1.10.0",
