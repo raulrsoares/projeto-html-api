@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { JwtServices } from '../services/jwt';
+import { JwtServices } from '../controllers/jwt';
 
 export const router = Router();
 
