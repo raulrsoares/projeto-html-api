@@ -10,7 +10,7 @@ export const errorHandler = (
   res: Response,
   _next: NextFunction,
 ) => {
-  console.error(err);
+  console.error(JSON.parse(JSON.stringify(err, null, 2)));
   const message = err.message || 'Internal Server Error';
   const status = err.status || 500;
   res.status(status).json({ message });
@@ -19,7 +19,6 @@ export const errorHandler = (
 export class HttpError extends Error {
   status: number;
   constructor(message: string, status: number) {
-    console.error(message);
     super(message);
     this.status = status;
   }
