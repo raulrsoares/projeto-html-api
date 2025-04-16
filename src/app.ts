@@ -10,7 +10,6 @@ const app: Express = express();
 
 const corsOptions: CorsOptions = {
   optionsSuccessStatus: 200,
-  credentials: true,
   allowedHeaders: ['Content-Type', 'Authorization'],
 };
 
