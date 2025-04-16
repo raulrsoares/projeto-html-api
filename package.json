@@ -3,14 +3,15 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "build": "tsc",
+    "build": "prisma generate && tsc",
     "start": "tsc && node dist/server.js",
     "dev": "prisma generate && prisma db push && tsx watch src/server.ts",
     "lint": "eslint 'src/**/*.ts'",
     "test": "jest",
     "test:watch": "jest --watch",
-    "generate": "prisma generate",
-    "studio": "prisma studio"
+    "prisma:generate": "prisma generate",
+    "prisma:push": "prisma push",
+    "prisma:studio": "prisma studio"
   },
   "keywords": [],
   "author": "",
