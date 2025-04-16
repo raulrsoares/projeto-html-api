@@ -16,87 +16,102 @@ export class CustomerController {
     this.delete = this.delete.bind(this);
   }
 
-  async create(req: Request, res: Response, _next: NextFunction) {
-    const { name, lastName, cpf, email, password, role }: RequestBody =
-      req.body;
-    if (!name || !lastName || !cpf || !email || !password) {
-      throw new UnauthorizedError('preencha todos os campos');
+  async create(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { name, lastName, cpf, email, password, role }: RequestBody =
+        req.body;
+      if (!name || !lastName || !cpf || !email || !password) {
+        throw new UnauthorizedError('preencha todos os campos');
+      }
+
+      const customer = await prismaClient.customer.create({
+        data: {
+          name,
+          lastName,
+          cpf,
+          email,
+          password,
+          role,
+        },
+      });
+
+      res.status(200).json({ customer });
+    } catch (error) {
+      next(error);
     }
-
-    const customer = await prismaClient.customer.create({
-      data: {
-        name,
-        lastName,
-        cpf,
-        email,
-        password,
-        role,
-      },
-    });
-
-    res.status(200).json({ customer });
   }
 
-  async put(_req: Request, res: Response, _next: NextFunction) {
+  async put(_req: Request, res: Response, next: NextFunction) {
     res.json({ message: 'ok' });
   }
 
-  async delete(req: Request, res: Response, _next: NextFunction) {
-    const { user_id } = req.params as { user_id: string };
-    const { sub, role } = (req as any).userInfo;
-    if (!user_id) {
-      throw new UnauthorizedError('preencha todos os parâmetros');
+  async delete(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { user_id } = req.params as { user_id: string };
+      const { sub, role } = (req as any).userInfo;
+      if (!user_id) {
+        throw new UnauthorizedError('preencha todos os parâmetros');
+      }
+
+      if (user_id === 'all') {
+        throw new BadRequestError('ID inválido');
+      }
+
+      const findCostumer = await prismaClient.customer.findFirst({
+        where: { id: user_id },
+      });
+
+      if (!findCostumer) {
+        throw new NotFoundError('cliente não existe');
+      }
+
+      const isTryingToDeleteSelf = user_id === sub;
+      const isAdmin = role === 'admin';
+
+      if (
+        (!isAdmin && !isTryingToDeleteSelf) ||
+        (isAdmin && isTryingToDeleteSelf)
+      ) {
+        throw new UnauthorizedError(
+          'Você não tem permissão para deletar esse usuário',
+        );
+      }
+
+      await prismaClient.customer.delete({
+        where: { id: findCostumer.id },
+      });
+
+      res.status(200).json({ message: 'deletado com sucesso' });
+    } catch (error) {
+      next(error);
     }
-
-    if (user_id === 'all') {
-      throw new BadRequestError('ID inválido');
-    }
-
-    const findCostumer = await prismaClient.customer.findFirst({
-      where: { id: user_id },
-    });
-
-    if (!findCostumer) {
-      throw new NotFoundError('cliente não existe');
-    }
-
-    const isTryingToDeleteSelf = user_id === sub;
-    const isAdmin = role === 'admin';
-
-    if (
-      (!isAdmin && !isTryingToDeleteSelf) ||
-      (isAdmin && isTryingToDeleteSelf)
-    ) {
-      throw new UnauthorizedError(
-        'Você não tem permissão para deletar esse usuário',
-      );
-    }
-
-    await prismaClient.customer.delete({
-      where: { id: findCostumer.id },
-    });
-
-    res.status(200).json({ message: 'deletado com sucesso' });
   }
 
-  async getOne(req: Request, res: Response, _next: NextFunction) {
-    const { user_id } = req.params as { user_id: string };
-    if (!user_id) {
-      throw new UnauthorizedError('preencha todos os parâmetros');
-    }
-    if (user_id === 'all') {
-      throw new BadRequestError('ID inválido');
-    }
+  async getOne(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { user_id } = req.params as { user_id: string };
+      if (!user_id) {
+        throw new UnauthorizedError('preencha todos os parâmetros');
+      }
+      if (user_id === 'all') {
+        throw new BadRequestError('ID inválido');
+      }
 
-    const customer = await prismaClient.customer.findMany();
+      const customer = await prismaClient.customer.findMany();
 
-    res.status(200).json({ customer });
+      res.status(200).json({ customer });
+    } catch (error) {
+      next(error);
+    }
   }
 
-  async getAll(_req: Request, res: Response, _next: NextFunction) {
-    console.log('chegou aqui');
-    const customer = await prismaClient.customer.findMany();
-    console.log(customer);
-    res.status(200).json(customer);
+  async getAll(_req: Request, res: Response, next: NextFunction) {
+    try {
+      const customer = await prismaClient.customer.findMany();
+      console.log(customer);
+      res.status(200).json(customer);
+    } catch (error) {
+      next(error);
+    }
   }
 }
