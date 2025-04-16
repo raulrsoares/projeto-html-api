@@ -7,6 +7,10 @@ export interface RequestBody {
   role?: 'admin' | 'default';
 }
 
+export interface PutRequestBody extends RequestBody {
+  isActive: boolean;
+}
+
 export interface ResponseBody {
   authorization: string;
   role: string;

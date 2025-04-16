@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { RequestBody } from '../models/customers.model';
+import { RequestBody, PutRequestBody } from '../models/customers.model';
 import {
   BadRequestError,
   UnauthorizedError,
@@ -41,8 +41,54 @@ export class CustomerController {
     }
   }
 
-  async put(_req: Request, res: Response, next: NextFunction) {
-    res.json({ message: 'ok' });
+  async put(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { user_id } = req.params as { user_id: string };
+      const { name, lastName, cpf, email, isActive, password }: PutRequestBody =
+        req.body;
+      const { sub, role } = (req as any).userInfo;
+
+      if (!user_id) {
+        throw new UnauthorizedError('preencha todos os campos');
+      }
+
+      const findCostumer = await prismaClient.customer.findFirst({
+        where: { id: user_id },
+      });
+
+      if (!findCostumer) {
+        throw new NotFoundError('cliente não existe');
+      }
+
+      const isTryingToDeleteSelf = user_id === sub;
+      const isAdmin = role === 'admin';
+
+      if (
+        (!isAdmin && !isTryingToDeleteSelf) ||
+        (isAdmin && isTryingToDeleteSelf)
+      ) {
+        throw new UnauthorizedError(
+          'Você não tem permissão para alterar esse usuário',
+        );
+      }
+
+      await prismaClient.customer.update({
+        data: {
+          name,
+          lastName,
+          isActive: isActive || true,
+          cpf,
+          email,
+          password,
+          updated_at: new Date(),
+        },
+        where: { id: findCostumer.id },
+      });
+
+      res.status(200).json({ message: 'atualizado com sucesso' });
+    } catch (error) {
+      next(error);
+    }
   }
 
   async delete(req: Request, res: Response, next: NextFunction) {
