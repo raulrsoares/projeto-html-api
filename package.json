@@ -12,7 +12,7 @@
     "prisma:generate": "prisma generate",
     "prisma:push": "prisma push",
     "prisma:studio": "prisma studio",
-    "vercel-build": "echo hello"
+    "vercel-build": "prisma generate && echo hello"
   },
   "keywords": [],
   "author": "",
