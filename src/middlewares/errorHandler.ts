@@ -1,4 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
+import { Prisma } from '../prisma/generated/prisma';
 
 export interface AppError extends Error {
   status?: number;
@@ -10,7 +11,16 @@ export const errorHandler = (
   res: Response,
   _next: NextFunction,
 ) => {
-  console.error(JSON.parse(JSON.stringify(err, null, 2)));
+  console.error('[ERRO]', {
+    name: err.name,
+    message: err.message,
+    stack: err.stack,
+    ...(err instanceof Prisma.PrismaClientKnownRequestError && {
+      code: err.code,
+      meta: err.meta,
+    }),
+  });
+
   const message = err.message || 'Internal Server Error';
   const status = err.status || 500;
   res.status(status).json({ message });

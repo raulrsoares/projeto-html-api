@@ -20,12 +20,16 @@ model Customer {
   lastName String
   email    String  @unique
   password String
-  cpf      String
+  cep      String
+  endereco String
+  bairro   String
+  estado   String
+  numero   Int
   isActive Boolean @default(true)
   role     String  @default("default")
 
   created_at DateTime @default(now())
-  updated_at DateTime @default(now())
+  updated_at DateTime @updatedAt
 
   @@map("customers")
 }

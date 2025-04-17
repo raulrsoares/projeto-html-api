@@ -3,7 +3,11 @@ export interface RequestBody {
   lastName: string;
   email: string;
   password: string;
-  cpf: string;
+  cep: string;
+  endereco: string;
+  bairro: string;
+  estado: string;
+  numero: number;
   role?: 'admin' | 'default';
 }
 
