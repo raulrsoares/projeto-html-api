@@ -16,4 +16,5 @@ export interface RequestBody {
 export interface ResponseBody {
   authorization: string;
   role: string;
+  id: string;
 }

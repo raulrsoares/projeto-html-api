@@ -51,6 +51,7 @@ export class JwtServices {
     const response: ResponseBody = {
       authorization: `Bearer ${token}`,
       role: findCostumer.role,
+      id: findCostumer.id,
     };
     return res
       .status(200)
