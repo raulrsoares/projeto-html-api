@@ -6,4 +6,4 @@ export const router = Router();
 
 const controller = new ClimaController();
 
-router.post('/:user_id', jwtAuth, controller.getCustomerClima);
+router.get('/:user_id', jwtAuth, controller.getCustomerClima);

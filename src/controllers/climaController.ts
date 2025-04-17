@@ -72,7 +72,7 @@ export class ClimaController {
       console.log(`Vento: ${data.wind_spd} m/s`);
 
       const body = {
-        location: `${localidade}/${uf}:`,
+        location: `${localidade}/${uf}`,
         description: data.weather.description,
         temp: data.temp,
         humidity: data.rh,
