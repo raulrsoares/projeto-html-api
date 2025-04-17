@@ -60,7 +60,19 @@ export class CustomerController {
           role,
         },
         select: {
+          id: true,
+          name: true,
+          lastName: true,
+          isActive: true,
+          cep: true,
+          endereco: true,
+          bairro: true,
+          estado: true,
+          numero: true,
+          email: true,
           password: false,
+          updated_at: true,
+          created_at: true,
         },
       });
 
