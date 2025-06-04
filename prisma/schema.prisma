@@ -33,3 +33,20 @@ model Customer {
 
   @@map("customers")
 }
+
+
+model Books {
+  id       String  @id @default(auto()) @map("_id") @db.ObjectId
+  titulo     String
+  autor String
+  genero    String
+  disponibilidade String
+  capa      String
+  isActive Boolean @default(true)
+  return_date DateTime @updatedAt
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  @@map("books")
+}
