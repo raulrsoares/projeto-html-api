@@ -9,6 +9,7 @@ import { timeLog } from './middlewares/timer.middlewares';
 const app: Express = express();
 
 const corsOptions: CorsOptions = {
+  origin: '*',
   optionsSuccessStatus: 200,
   allowedHeaders: ['Content-Type', 'Authorization'],
 };
